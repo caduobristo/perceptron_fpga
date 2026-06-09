@@ -1,1 +1,7 @@
 .venv
+.qsys_edit
+db
+greybox_tmp
+incremental_db
+output_files
+simulation
