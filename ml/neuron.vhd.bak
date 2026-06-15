@@ -1,0 +1,72 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity neuron is
+    port(
+        clk         : in  std_logic;
+        reset       : in  std_logic;
+
+        done        : in  std_logic;
+
+        energy_in   : in  unsigned(31 downto 0);
+        zcr_in      : in  unsigned(15 downto 0);
+
+        result      : out std_logic;
+        score_out   : out signed(31 downto 0)
+    );
+end entity;
+
+architecture rtl of neuron is
+
+    constant W1   : integer := -63;
+    constant W2   : integer := 95;
+    constant BIAS : integer := -507;
+
+    signal score_reg : signed(31 downto 0) := (others => '0');
+
+begin
+
+    process(clk)
+
+        variable energy_int : integer;
+        variable zcr_int    : integer;
+
+        variable acc        : integer;
+
+    begin
+
+        if rising_edge(clk) then
+
+            if reset = '1' then
+
+                score_reg <= (others => '0');
+                result <= '0';
+
+            elsif done = '1' then
+
+                energy_int := to_integer(energy_in);
+                zcr_int    := to_integer(zcr_in);
+
+                acc :=
+                    (W1 * energy_int) +
+                    (W2 * zcr_int) +
+                    BIAS;
+
+                score_reg <= to_signed(acc, 32);
+
+                if acc >= 0 then
+                    result <= '1';
+                else
+                    result <= '0';
+                end if;
+
+            end if;
+
+        end if;
+
+    end process;
+
+    score_out <= score_reg;
+
+end architecture;
