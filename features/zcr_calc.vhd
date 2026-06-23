@@ -20,6 +20,7 @@ architecture rtl of zcr_calc is
     signal last_sample  : signed(7 downto 0) := (others => '0');
     signal zcr_count    : unsigned(15 downto 0) := (others => '0');
     signal first_sample : std_logic := '1';
+    signal done_d        : std_logic := '1';
 
 begin
 
@@ -27,6 +28,7 @@ begin
     begin
 
         if rising_edge(clk) then
+            done_d <= done;
 
             if reset = '1' then
 
@@ -34,20 +36,32 @@ begin
                 zcr_count    <= (others => '0');
                 first_sample <= '1';
 
-            elsif done = '0' then
+            else
 
-                if first_sample = '1' then
+                -- Detecta borda de descida de done (início do processamento)
+                if done = '0' and done_d = '1' then
 
-                    last_sample  <= sample_in;
-                    first_sample <= '0';
+                    last_sample  <= (others => '0');
+                    zcr_count    <= (others => '0');
+                    first_sample <= '1';
 
-                else
+                -- Processamento normal
+                elsif done = '0' then
 
-                    if sample_in(7) /= last_sample(7) then
-                        zcr_count <= zcr_count + 1;
+                    if first_sample = '1' then
+
+                        last_sample  <= sample_in;
+                        first_sample <= '0';
+
+                    else
+
+                        if sample_in(7) /= last_sample(7) then
+                            zcr_count <= zcr_count + 1;
+                        end if;
+
+                        last_sample <= sample_in;
+
                     end if;
-
-                    last_sample <= sample_in;
 
                 end if;
 

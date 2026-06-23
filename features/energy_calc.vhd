@@ -22,6 +22,7 @@ architecture rtl of energy_calc is
     -- Aguarda a latência da ROM
     signal processing_enable : std_logic := '0';
     signal startup_counter   : integer range 0 to 2 := 0;
+    signal done_d            : std_logic := '1';
 
 begin
 
@@ -32,6 +33,7 @@ begin
     begin
 
         if rising_edge(clk) then
+            done_d <= done;
 
             if reset = '1' then
 
@@ -42,26 +44,37 @@ begin
 
             else
 
-                -- Espera 2 clocks após o reset
-                if processing_enable = '0' then
+                -- Detecta borda de descida de done (início do processamento)
+                if done = '0' and done_d = '1' then
 
-                    if startup_counter = 1 then
+                    energy_acc <= (others => '0');
 
-                        processing_enable <= '1';
-
-                    else
-
-                        startup_counter <= startup_counter + 1;
-
-                    end if;
+                    processing_enable <= '0';
+                    startup_counter   <= 1; -- Começa em 1 para compensar o atraso do ciclo de detecção
 
                 -- Processamento normal
                 elsif done = '0' then
 
-                    square := sample_in * sample_in;
+                    if processing_enable = '0' then
 
-                    energy_acc <= energy_acc +
-                        resize(unsigned(square), 32);
+                        if startup_counter = 1 then
+
+                            processing_enable <= '1';
+
+                        else
+
+                            startup_counter <= startup_counter + 1;
+
+                        end if;
+
+                    else
+
+                        square := sample_in * sample_in;
+
+                        energy_acc <= energy_acc +
+                            resize(unsigned(square), 32);
+
+                    end if;
 
                 end if;
 
