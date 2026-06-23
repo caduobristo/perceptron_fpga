@@ -1197,13 +1197,23 @@ SIGNAL("adrr[0]")
 	PARENT = "adrr";
 }
 
-SIGNAL("processing")
+SIGNAL("start")
 {
 	VALUE_TYPE = NINE_LEVEL_BIT;
 	SIGNAL_TYPE = SINGLE_BIT;
 	WIDTH = 1;
 	LSB_INDEX = -1;
 	DIRECTION = INPUT;
+	PARENT = "";
+}
+
+SIGNAL("pronto")
+{
+	VALUE_TYPE = NINE_LEVEL_BIT;
+	SIGNAL_TYPE = SINGLE_BIT;
+	WIDTH = 1;
+	LSB_INDEX = -1;
+	DIRECTION = OUTPUT;
 	PARENT = "";
 }
 
@@ -2160,7 +2170,7 @@ TRANSITION_LIST("adrr[0]")
 	}
 }
 
-TRANSITION_LIST("processing")
+TRANSITION_LIST("start")
 {
 	NODE
 	{
@@ -2170,6 +2180,15 @@ TRANSITION_LIST("processing")
 		LEVEL 0 FOR 1800.0;
 		LEVEL 1 FOR 100.0;
 		LEVEL 0 FOR 1400.0;
+	}
+}
+
+TRANSITION_LIST("pronto")
+{
+	NODE
+	{
+		REPEAT = 1;
+		LEVEL X FOR 3500.0;
 	}
 }
 
@@ -2194,7 +2213,7 @@ DISPLAY_LINE
 
 DISPLAY_LINE
 {
-	CHANNEL = "processing";
+	CHANNEL = "start";
 	EXPAND_STATUS = COLLAPSED;
 	RADIX = Binary;
 	TREE_INDEX = 1;
@@ -3295,6 +3314,15 @@ DISPLAY_LINE
 	EXPAND_STATUS = COLLAPSED;
 	RADIX = Binary;
 	TREE_INDEX = 111;
+	TREE_LEVEL = 0;
+}
+
+DISPLAY_LINE
+{
+	CHANNEL = "pronto";
+	EXPAND_STATUS = COLLAPSED;
+	RADIX = Binary;
+	TREE_INDEX = 112;
 	TREE_LEVEL = 0;
 }
 
