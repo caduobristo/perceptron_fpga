@@ -82,13 +82,7 @@ BEGIN
 
                     processing <= '0';
                 WHEN FINISHED =>
-                    IF (NOT((start = '1'))) THEN
-                        reg_fstate <= IDLE;
-                    ELSIF ((start = '1')) THEN
-                        reg_fstate <= FINISHED;
-                    ELSE
-                        reg_fstate <= FINISHED;
-                    END IF;
+                    reg_fstate <= FINISHED;
 
                     pronto <= '1';
 

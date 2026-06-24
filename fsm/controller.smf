@@ -178,23 +178,12 @@ HEADER
 	TRANS{
 		SSTATE = "FINISHED";
 		DSTATE = "FINISHED";
-		EQ = "start";
+		EQ = "";
 		PT = (562,167);
 		PT = (598,167);
 		PT = (598,202);
 		PT = (562,202);
 		PT = (603,182);
-	}
-
-	TRANS{
-		SSTATE = "FINISHED";
-		DSTATE = "IDLE";
-		EQ = "~start";
-		PT = (544,209);
-		PT = (544,289);
-		PT = (64,289);
-		PT = (64,209);
-		PT = (304,289);
 	}
 )
 END
